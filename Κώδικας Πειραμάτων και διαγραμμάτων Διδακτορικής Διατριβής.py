@@ -822,49 +822,39 @@ plt.show()
 from graphviz import Digraph
 
 # Δημιουργία διαγράμματος
-dot = Digraph(format='png', comment='XLM-R -> TCN -> ML Classifier')
-dot.attr(dpi='300')  # Ανάλυση 300dpi
-dot.attr(rankdir='LR', size='8,5')  # Οριζόντιο flow
-
-# Στυλ κόμβων
-dot.attr('node', shape='box', style='filled', color='lightblue', fontname='Helvetica', fontsize='12')
-
-# Κόμβοι
-dot.node('A', 'XLM-R\n(Προεκπαιδευμένο Transformer)\nFeature Extraction')
-dot.node('B', 'TCN\n(Temporal Convolutional Network)\nFeature Enrichment')
-dot.node('C', 'ML Classifier\n(XGBoost, KNN, LR κλπ)\nPrediction')
-
-# Σύνδεσμοι
-dot.edge('A', 'B', label='Μεταφορά embeddings')
-dot.edge('B', 'C', label='Εμπλουτισμένα χαρακτηριστικά')
-
-# Αποθήκευση
-output_path = '/content/XLMR_TCN_Classifier_Flowchart'
-dot.render(output_path, format='png', cleanup=True)
-print(f"Το διάγραμμα αποθηκεύτηκε στο: {output_path}.png")
-
-#Διάγραμμα ροής με datasets → fine-tuned μοντέλα → αξιολόγηση
-# Εγκατάσταση βιβλιοθηκών 
-!pip install graphviz
 from graphviz import Digraph
 
-# Δημιουργία διαγράμματος ροής
-dot = Digraph(comment="Fine-Tuning Process", format='png')
-dot.attr(dpi='300')
+# Δημιουργία διαγράμματος
+dot = Digraph(comment='XLM-R -> TCN -> ML Classifier', format='png')
+dot.attr(dpi='300')  # Υψηλή ευκρίνεια
+dot.attr(rankdir='TB', size='6,8')  # Κάθετη ροή (Top → Bottom)
+
+# Στυλ κόμβων
+dot.attr('node', shape='box', style='filled', color='lightblue',
+         fontname='Helvetica', fontsize='11', width='2.8', height='0.9')
 
 # Κόμβοι
-dot.node('A', 'Σύνολα Δεδομένων\n(π.χ., Sp1786, US Airlines,\nFinancial PhraseBank, Climate Sentiment)', shape='box', style='filled', color='lightblue')
-dot.node('B', 'Fine-Tuned Μοντέλα\n(DeBERTa, BART, T5, GPT-2,\nALBERT, Pythia)', shape='box', style='filled', color='lightgreen')
-dot.node('C', 'Αξιολόγηση με Μετρικές\n(Accuracy, F1, Recall, Precision,\nMCC, Kappa)', shape='box', style='filled', color='lightyellow')
+dot.node('Input', 'Είσοδος Κειμένου\n(Text Input)')
+dot.node('Tokenizer', 'Tokenization\n(Προεπεξεργασία Κειμένου)')
+dot.node('XLMR', 'XLM-R\nΠροεκπαιδευμένο Transformer\nFeature Extraction')
+dot.node('TCN', 'TCN\nTemporal Convolutional Network\nFeature Enrichment')
+dot.node('Classifier', 'ML Classifier\n(XGBoost / KNN / LR)\nPrediction')
+dot.node('Output', 'Έξοδος\n(Τελική Κατηγορία)')
 
-# Ροές
-dot.edges(['AB', 'BC'])
+# Συνδέσεις
+dot.edge('Input', 'Tokenizer', label='Κειμενική Είσοδος')
+dot.edge('Tokenizer', 'XLMR', label='Ενσωμάτωση tokens')
+dot.edge('XLMR', 'TCN', label='Μεταφορά embeddings')
+dot.edge('TCN', 'Classifier', label='Εμπλουτισμένα χαρακτηριστικά')
+dot.edge('Classifier', 'Output', label='Τελική Πρόβλεψη')
 
-# Αποθήκευση & εμφάνιση
-output_path = '/content/Fine_Tuning_Flowchart'
-dot.render(output_path, view=True)
+# Αποθήκευση
+output_path = '/content/XLMR_TCN_Classifier_Flowchart_Vertical'
+dot.render(output_path, format='png', cleanup=True)
 
-print(f"Διάγραμμα αποθηκεύτηκε: {output_path}.png")
+print(f"✅ Το διάγραμμα αποθηκεύτηκε στο: {output_path}.png")
+print("💡 Συμβουλή: Εισήγαγε το PNG στο Word με 'Εισαγωγή > Εικόνα > Από αρχείο' και ρύθμισε πλάτος ~12–13 cm.")
+
 
 #Απόδοση Μετρικών σε Datasets 2 κλάσεων (μέσες τιμές)
 import pandas as pd
