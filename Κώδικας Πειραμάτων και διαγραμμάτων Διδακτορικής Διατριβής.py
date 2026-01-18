@@ -1041,3 +1041,347 @@ def plot_calibration(df, title, filename):
 # Δημιουργία γραφημάτων
 plot_calibration(df_climate, "Calibration Metrics - climate_3cl", "calibration_climate_3cl.png")
 plot_calibration(df_cardiff, "Calibration Metrics - cardifnlp_2cl", "calibration_cardifnlp_2cl.png")
+
+#---------------------------------------------#
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Ορισμός των δεδομένων από κάθε πίνακα
+data_23 = {
+    "Classifiers": ["MV-“T5,GPT2,Pythia”", "SV-“DeBERTa,T5,GPT2”", "T5"],
+    "Accuracy": [0.876, 0.852, 0.828],
+    "F1": [0.876, 0.851, 0.828],
+    "Precision": [0.877, 0.852, 0.834],
+    "Recall": [0.876, 0.851, 0.832],
+    "MCC": [0.811, 0.773, 0.737],
+    "Kappa": [0.81, 0.773, 0.737]
+}
+
+data_24 = {
+    "Classifiers": ["MV-Bart,Albert,GPT2", "SV-DeBERTa,T5,Albert", "DeBERTa"],
+    "Accuracy": [0.802, 0.741, 0.726],
+    "F1": [0.803, 0.741, 0.726],
+    "Precision": [0.805, 0.741, 0.721],
+    "Recall": [0.802, 0.742, 0.722],
+    "MCC": [0.684, 0.588, 0.565],
+    "Kappa": [0.683, 0.587, 0.565]
+}
+
+data_25 = {
+    "Classifiers": ["MV-“Bart,Albert,GPT2”", "SV-“Bart,DeBERTa,T5”", "DeBERTa"],
+    "Accuracy": [0.832, 0.777, 0.769],
+    "F1": [0.832, 0.776, 0.769],
+    "Precision": [0.836, 0.777, 0.772],
+    "Recall": [0.832, 0.776, 0.771],
+    "MCC": [0.749, 0.664, 0.652],
+    "Kappa": [0.747, 0.664, 0.652]
+}
+
+data_26 = {
+    "Classifiers": ["MV-“T5,GPT2,Pythia”", "SV-“Bart,DeBERTa,T5”", "T5"],
+    "Accuracy": [0.917, 0.873, 0.865],
+    "F1": [0.916, 0.87, 0.862],
+    "Precision": [0.916, 0.869, 0.827],
+    "Recall": [0.917, 0.873, 0.806],
+    "MCC": [0.833, 0.752, 0.737],
+    "Kappa": [0.832, 0.751, 0.736]
+}
+
+data_27 = {
+    "Classifiers": ["MV-“Bart,T5,GPT2”", "SV-“Bart,DeBERTa,GPT2”", "Bart"],
+    "Accuracy": [0.898, 0.886, 0.876],
+    "F1": [0.898, 0.885, 0.877],
+    "Precision": [0.899, 0.885, 0.840],
+    "Recall": [0.898, 0.886, 0.847],
+    "MCC": [0.810, 0.781, 0.766],
+    "Kappa": [0.809, 0.781, 0.766]
+}
+
+data_28 = {
+    "Classifiers": ["MV-“Bart,DeBERTa,Albert”", "SV-“Bart,DeBERTa,T5”", "DeBERTa"],
+    "Accuracy": [0.933, 0.913, 0.903],
+    "F1": [0.933, 0.913, 0.904],
+    "Precision": [0.937, 0.913, 0.895],
+    "Recall": [0.933, 0.913, 0.897],
+    "MCC": [0.901, 0.868, 0.853],
+    "Kappa": [0.899, 0.868, 0.853]
+}
+
+data_29 = {
+    "Classifiers": ["MV-“T5,GPT2,Pythia”", "SV-“Bart,DeBERTa,T5”", "T5"],
+    "Accuracy": [0.917, 0.873, 0.865],
+    "F1": [0.917, 0.872, 0.864],
+    "Precision": [0.918, 0.873, 0.857],
+    "Recall": [0.917, 0.873, 0.837],
+    "MCC": [0.845, 0.77, 0.756],
+    "Kappa": [0.845, 0.768, 0.754]
+}
+
+data_30 = {
+    "Classifiers": ["MV-“T5,Albert,GPT2”", "SV-“Bart,DeBERTa,Albert”", "DeBERTa"],
+    "Accuracy": [0.941, 0.919, 0.905],
+    "F1": [0.941, 0.918, 0.904],
+    "Precision": [0.941, 0.919, 0.914],
+    "Recall": [0.941, 0.919, 0.865],
+    "MCC": [0.889, 0.853, 0.826],
+    "Kappa": [0.889, 0.852, 0.825]
+}
+
+data_31 = {
+    "Classifiers": ["MV-“DeBERTa,GPT2,Pythia”", "SV-“Bart,DeBERTa,T5”", "DeBERTa"],
+    "Accuracy": [0.968, 0.963, 0.959],
+    "F1": [0.968, 0.963, 0.96],
+    "Precision": [0.969, 0.963, 0.945],
+    "Recall": [0.968, 0.963, 0.952],
+    "MCC": [0.942, 0.932, 0.926],
+    "Kappa": [0.941, 0.932, 0.925]
+}
+
+data_32 = {
+    "Classifiers": ["MV-“DeBERTa,Albert,GPT2”", "DeBERTa", "SV-“DeBERTa,T5,GPT2”"],
+    "Accuracy": [0.988, 0.985, 0.982],
+    "F1": [0.988, 0.985, 0.982],
+    "Precision": [0.988, 0.98, 0.982],
+    "Recall": [0.988, 0.979, 0.982],
+    "MCC": [0.978, 0.973, 0.967],
+    "Kappa": [0.978, 0.973, 0.967]
+}
+
+data_33 = {
+    "Classifiers": ["MV-“DeBERTa,Albert,Pythia”", "DeBERTa", "SV-“DeBERTa,Albert,GPT2”"],
+    "Accuracy": [0.839, 0.754, 0.754],
+    "F1": [0.837, 0.754, 0.727],
+    "Precision": [0.845, 0.754, 0.761],
+    "Recall": [0.839, 0.753, 0.696],
+    "MCC": [0.68, 0.507, 0.505],
+    "Kappa": [0.672, 0.507, 0.503]
+}
+
+data_34 = {
+    "Classifiers": ["MV-“DeBERTa,Albert,Pythia”", "SV-“Bart,DeBERTa,T5”", "DeBERTa"],
+    "Accuracy": [0.905, 0.857, 0.851],
+    "F1": [0.905, 0.857, 0.851],
+    "Precision": [0.907, 0.86, 0.852],
+    "Recall": [0.905, 0.853, 0.851],
+    "MCC": [0.811, 0.715, 0.703],
+    "Kappa": [0.81, 0.715, 0.702]
+}
+
+# Δημιουργία λίστας με όλα τα datasets
+all_data = [
+    (23, data_23, "climate_3cl"),
+    (24, data_24, "cardiffnlp_3cl"),
+    (25, data_25, "Sp1786_3cl"),
+    (26, data_26, "US_Airlines_3cl"),
+    (27, data_27, "0shot_twitter_3cl"),
+    (28, data_28, "NusaX_3cl"),
+    (29, data_29, "takala_50_3cl"),
+    (30, data_30, "takala_66_3cl"),
+    (31, data_31, "takala_75_3cl"),
+    (32, data_32, "takala_100_3cl"),
+    (33, data_33, "cardiffnlp_2cl"),
+    (34, data_34, "carblacac_2cl")
+]
+
+# Ορισμός παλέτας χρωμάτων για 3 classifiers
+color_palette = sns.color_palette("tab10", 3)
+
+# Δημιουργία γραφημάτων για κάθε πίνακα με ανάποδη διάταξη
+for table_num, data, dataset_name in all_data:
+    df = pd.DataFrame(data)
+
+    # Μετατροπή του DataFrame σε μακρύ format
+    df_melted = df.melt(id_vars='Classifiers',
+                        value_vars=['Accuracy', 'F1', 'Precision', 'Recall', 'MCC', 'Kappa'],
+                        var_name='Metric',
+                        value_name='Score')
+
+    # Δημιουργία του subplot με μεγαλύτερο μέγεθος για καλύτερη ευκρίνεια
+    plt.figure(figsize=(14, 8))
+
+    # Δημιουργία bar plot με μετρικές στον άξονα x και classifiers ως hue
+    ax = sns.barplot(data=df_melted, x='Metric', y='Score', hue='Classifiers',
+                     palette=color_palette, edgecolor='black', width=0.8)
+
+    # Προσθήκη τιμών πάνω από τα bars
+    for container in ax.containers:
+        ax.bar_label(container, fmt='%.3f', fontsize=10, padding=3)
+
+    # Ρύθμιση του τίτλου και labels
+    plt.title(f'Πίνακας {table_num}: Σύνολα έναντι του νικητή των μετασχηματιστών για το {dataset_name}',
+              fontsize=16, fontweight='bold', pad=20)
+    plt.xlabel('Μετρικές', fontsize=14)
+    plt.ylabel('Score', fontsize=14)
+
+    # Ρύθμιση των ticks στον άξονα y
+    plt.ylim(0, 1.05)
+
+    # Ρύθμιση θέσης legend
+    plt.legend(title='Classifiers', title_fontsize=12, fontsize=11,
+               loc='upper center', bbox_to_anchor=(0.5, -0.15),
+               fancybox=True, shadow=True, ncol=3)
+
+    # Ρύθμιση των labels στον άξονα x
+    plt.xticks(fontsize=12, rotation=0)
+
+    # Ρύθμιση γραμμών πλέγματος
+    plt.grid(axis='y', alpha=0.3, linestyle='--')
+
+    # Ρύθμιση layout για να χωράει το legend
+    plt.tight_layout(rect=[0, 0.1, 1, 0.95])
+
+    # Αποθήκευση της εικόνας σε 300 dpi
+    plt.savefig(f'Πίνακας_{table_num}_{dataset_name}_ανάποδα.png', dpi=300, bbox_inches='tight')
+
+    # Εμφάνιση του γραφήματος
+    plt.show()
+
+    print(f"Δημιουργήθηκε το γράφημα για τον Πίνακα {table_num}: {dataset_name}")
+
+# Εναλλακτική έκδοση: Όλα τα γραφήματα σε ένα μόνο figure με subplots
+print("\n--- Δημιουργία όλων των γραφημάτων σε ένα μόνο figure ---")
+
+# Δημιουργία figure με πολλαπλά subplots
+fig, axes = plt.subplots(4, 3, figsize=(24, 28))
+fig.suptitle('Σύνολα έναντι του νικητή των μετασχηματιστών για όλα τα datasets\n(Μετρικές στον άξονα Χ, Classifiers ως διαφορετικές μπάρες)',
+             fontsize=22, fontweight='bold', y=1.02)
+
+axes = axes.flatten()
+
+for idx, (table_num, data, dataset_name) in enumerate(all_data):
+    if idx >= len(axes):
+        break
+
+    df = pd.DataFrame(data)
+    df_melted = df.melt(id_vars='Classifiers',
+                        value_vars=['Accuracy', 'F1', 'Precision', 'Recall', 'MCC', 'Kappa'],
+                        var_name='Metric',
+                        value_name='Score')
+
+    ax = axes[idx]
+    sns.barplot(data=df_melted, x='Metric', y='Score', hue='Classifiers',
+                palette=color_palette, edgecolor='black', ax=ax, width=0.8)
+
+    ax.set_title(f'Πίνακας {table_num}: {dataset_name}', fontsize=14, fontweight='bold')
+    ax.set_xlabel('Μετρικές', fontsize=12)
+    ax.set_ylabel('Score', fontsize=12)
+    ax.set_ylim(0, 1.05)
+
+    # Προσθήκη τιμών (μόνο για το πρώτο bar κάθε ομάδας για ευκρίνεια)
+    if idx == 0:
+        for container in ax.containers[:1]:  # Μόνο το πρώτο classifier για να μην γίνει πολύ γεμάτο
+            ax.bar_label(container, fmt='%.3f', fontsize=8, padding=2)
+
+    # Ρύθμιση legend
+    if idx == 0:  # Προσθήκη legend μόνο στο πρώτο γράφημα
+        ax.legend(title='Classifiers', title_fontsize=11, fontsize=10,
+                  loc='upper center', bbox_to_anchor=(0.5, -0.2), ncol=3)
+    else:
+        ax.get_legend().remove()
+
+    ax.grid(axis='y', alpha=0.3, linestyle='--')
+    ax.tick_params(axis='x', rotation=45)
+
+# Ρύθμιση layout
+plt.tight_layout()
+
+# Αποθήκευση του συνολικού figure
+plt.savefig('Όλοι_οι_πίνακες_ανάποδα.png', dpi=300, bbox_inches='tight')
+plt.show()
+
+print("Δημιουργήθηκαν όλα τα γραφήματα!")
+
+# Δημιουργία πιο συμπαγών γραφημάτων με καλύτερη οργάνωση - ΒΕΛΤΙΩΜΕΝΗ ΕΚΔΟΣΗ
+for table_num, data, dataset_name in all_data:
+    df = pd.DataFrame(data)
+
+    # Μετατροπή του DataFrame σε μακρύ format
+    df_melted = df.melt(id_vars='Classifiers',
+                        value_vars=['Accuracy', 'F1', 'Precision', 'Recall', 'MCC', 'Kappa'],
+                        var_name='Metric',
+                        value_name='Score')
+
+    # Δημιουργία του subplot - ΠΙΟ ΚΟΝΤΟ ΓΙΑ WORD
+    fig, ax = plt.subplots(figsize=(10, 5))
+
+    # Δημιουργία grouped bar plot
+    metrics = ['Accuracy', 'F1', 'Precision', 'Recall', 'MCC', 'Kappa']
+    classifiers = df['Classifiers'].tolist()
+
+    # Δημιουργία θέσεων για κάθε ομάδα μπάρας
+    x = np.arange(len(metrics))
+    width = 0.25  # Πλάτος κάθε μπάρας
+
+    # Δημιουργία μπαρών για κάθε classifier
+    for i, classifier in enumerate(classifiers):
+        # Εξαγωγή τιμών για τον τρέχοντα classifier
+        values = [df[df['Classifiers'] == classifier][metric].values[0] for metric in metrics]
+        # Θέση για κάθε ομάδα μπαρών
+        positions = x + (i - 1) * width
+        bars = ax.bar(positions, values, width, label=classifier,
+                      color=color_palette[i], edgecolor='black', alpha=0.8)
+
+        # Προσθήκη τιμών πάνω από τα bars
+        for bar, value in zip(bars, values):
+            height = bar.get_height()
+            ax.text(bar.get_x() + bar.get_width()/2., height + 0.005,
+                    f'{value:.3f}', ha='center', va='bottom', fontsize=8)
+
+    # Ρύθμιση του τίτλου - 1 ΕΚΑΤΟΣΤΟ ΑΠΟ ΤΟ ΓΡΑΦΗΜΑ
+    # Μετατροπή εκατοστών σε inches (1 εκατοστό = 0.3937 inches)
+    cm_to_inch = 0.3937
+    title_distance_cm = 1  # 1 εκατοστό
+    total_height = 5  # ύψος γραφήματος σε inches
+
+    # Υπολογισμός pad σε inches
+    title_pad_inches = title_distance_cm * cm_to_inch
+    # Μετατροπή σε points (1 inch = 72 points)
+    title_pad_points = title_pad_inches * 72
+
+    ax.set_title(f'Πίνακας {table_num}: Σύνολα έναντι του νικητή για το {dataset_name}',
+                 fontsize=14, fontweight='bold', pad=title_pad_points)
+
+    # Ρύθμιση labels
+    ax.set_xlabel('Μετρικές', fontsize=12)
+    ax.set_ylabel('Score', fontsize=12)
+    ax.set_xticks(x)
+    ax.set_xticklabels(metrics, fontsize=11)
+    ax.set_ylim(0, 1.1)
+
+    # ΑΦΑΙΡΕΣΗ ΠΛΑΙΣΙΟΥ - ΜΟΝΟ ΑΞΟΝΕΣ Χ,Υ
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.spines['left'].set_visible(True)
+    ax.spines['bottom'].set_visible(True)
+
+    # Ρύθμιση legend - 1.5 ΕΚΑΤΟΣΤΑ ΑΠΟΣΤΑΣΗ ΑΠΟ ΤΟ ΓΡΑΦΗΜΑ (1 + 0.5)
+    # Υπολογισμός του bbox_to_anchor για legend
+    legend_distance_cm = 1.5  # 1.5 εκατοστά (1 + 0.5 επιπλέον)
+    legend_y_position = 1 + (legend_distance_cm * cm_to_inch / total_height)
+
+    # ΜΕΓΑΛΥΤΕΡΗ ΓΡΑΜΜΑΤΟΣΕΙΡΑ ΓΙΑ ΤΑ CLASSIFIERS
+    legend = ax.legend(title='Classifiers', title_fontsize=12, fontsize=12,  # fontsize=12
+              loc='upper center', bbox_to_anchor=(0.5, legend_y_position),  # 1.5 εκατοστά
+              fancybox=False, shadow=False, ncol=3, frameon=False)
+
+    # Διαφάνεια στο title του legend
+    legend.get_title().set_backgroundcolor((1, 1, 1, 0))  # Διαφανές white background
+    legend.get_title().set_color('black')
+
+    # Ρύθμιση γραμμών πλέγματος - ΜΟΝΟ ΟΡΙΖΟΝΤΙΕΣ
+    ax.grid(axis='y', alpha=0.3, linestyle='--')
+    ax.grid(axis='x', visible=False)  # Απενεργοποίηση κατακόρυφων γραμμών
+
+    # Ρύθμιση layout - Αφήνουμε περισσότερο χώρο πάνω για τίτλο και legend
+    plt.subplots_adjust(top=0.90, bottom=0.12, left=0.1, right=0.95)  # top=0.90 για περισσότερο χώρο
+
+    # Αποθήκευση της εικόνας
+    plt.savefig(f'Πίνακας_{table_num}_{dataset_name}_grouped_clean.png', dpi=300, bbox_inches='tight',
+                transparent=True)
+
+    # Εμφάνιση του γραφήματος
+    plt.show()
+
+print("Δημιουργήθηκαν όλα τα βελτιωμένα grouped γραφήματα με legend 1.5 εκατοστά από το γράφημα!")
