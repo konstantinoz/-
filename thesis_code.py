@@ -663,6 +663,16 @@ for name, score in zip(class_names, recall_per_class):
 summary(model)
 
 # Υπολογισμός calibration metrics
+'''
+Ελέγχει πόσο "καλά βαθμολογημένη" είναι η πρόβλεψη του μοντέλου:
+Average Confidence (Correct) → μέσο confidence όταν η πρόβλεψη είναι σωστή.
+Average Confidence (Incorrect) → μέσο confidence όταν η πρόβλεψη είναι λανθασμένη.
+ECE (Expected Calibration Error) → μετρά την διαφορά μεταξύ confidence και accuracy. Μικρότερο ECE = καλύτερη βαθμονόμηση.
+Το γράφημα έχει:
+Μπάρες για Correct & Incorrect (δεξιά-αριστερά για κάθε μοντέλο).
+Γραμμή για ECE στον δεύτερο άξονα Υ.
+Δημιουργούνται δύο γραφήματα για δύο datasets (climate_3cl και cardifnlp_2cl).
+'''
 df = predsVSlabels
 df['confidence'] = df[['negative', 'neutral', 'positive']].max(axis=1)
 df['correct'] = df['predicted_labels'] == df['target']
