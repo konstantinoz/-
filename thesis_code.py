@@ -1,5 +1,10 @@
 #Κώδικας Πειραμάτων και διαγραμμάτων Διδακτορικής Διατριβής
+
 #Zero – shot classification (updated με LIME – SHAP και Reliability diagrams)
+'''
+Αυτός ο κώδικας εκτελεί zero-shot ταξινόμηση συναισθήματος σε κείμενα χρησιμοποιώντας το μοντέλο distilbart-mnli-12-1 της Hugging Face, με πλήρη υποστήριξη ερμηνευσιμότητας μέσω LIME και SHAP και αξιολόγησης αξιοπιστίας. Αρχικά αφαιρεί και επανεγκαθιστά τις βιβλιοθήκες για συμβατότητα, φορτώνει το dataset συναισθημάτων αεροπορικών εταιρειών, και δημιουργεί pipeline για zero-shot ταξινόμηση με ετικέτες negative, neutral, positive. Στη συνέχεια, υπολογίζει πιθανότητες, προβλέψεις και μήκος κειμένων, αποθηκεύει τα αποτελέσματα σε CSV και εφαρμόζει LIME και SHAP για εξήγηση των αποφάσεων του μοντέλου σε επιλεγμένα δείγματα. Τέλος, υπολογίζει πλήθος μετρικών αξιολόγησης (accuracy, F1, precision, recall, MCC, Cohen’s kappa), εμφανίζει normalized confusion matrix, και δημιουργεί reliability diagram για να ελέγξει την αντιστοιχία της εμπιστοσύνης των προβλέψεων με την πραγματική ακρίβεια.
+'''
+
 # Αποσύνδεση της προεγκατεστημένης cache του Google Colab
 !pip uninstall -y datasets
 !pip uninstall -y huggingface_hub
@@ -220,6 +225,10 @@ plt.savefig(f"reliability_{model_name.replace('/', '_')}_zeroshot_financial.png"
 plt.close()
 
 # Fine tuning Sentiment analysis και Reliability diagrams 
+
+'''
+ο κώδικας υλοποιεί fine-tuning ενός μοντέλου μετασχηματιστών για πολυκατηγορική ανάλυση συναισθήματος, με πλήρη υπολογισμό αξιοπιστίας προβλέψεων. Αρχικά φορτώνει το dataset Sp1786/multiclass-sentiment-analysis-dataset, ενοποιεί τα splits, καθαρίζει τα κείμενα με εκτενή preprocessing (αφαίρεση URL, emoji, usernames, punctuation, stopwords, decontractions, κ.ά.) και δημιουργεί training/validation/test splits. Στη συνέχεια, κάνει tokenization με tokenizer του μοντέλου EleutherAI/pythia-410m, προετοιμάζει datasets για το Hugging Face Trainer, και εκτελεί grid search για hyperparameter tuning (learning rate, batch size, αριθμό εποχών) με early stopping. Μετά την εκπαίδευση, αποθηκεύει το καλύτερο μοντέλο, υπολογίζει πιθανότητες και προβλέψεις για το test set, παράγει confusion matrix, ROC AUC scores, και πλήθος μετρικών αξιολόγησης (accuracy, F1, precision, recall, MCC, Cohen’s kappa). Τέλος, υπολογίζει την εμπιστοσύνη των προβλέψεων και δημιουργεί reliability diagram μαζί με Expected Calibration Error (ECE) για την εκτίμηση της βαθμονόμησης του μοντέλου.
+'''
 '''
 !pip install torchinfo
 !pip install transformers
@@ -699,6 +708,9 @@ print(f"Expected Calibration Error (ECE): {ece:.4f}")
 
 
 #Γεωμετρική αναπαράσταση τρισδιάστατου Vector Space
+'''
+Ο κώδικας δημιουργεί μια τρισδιάστατη γεωμετρική αναπαράσταση ενός vector space για word embeddings. Ορίζει διανύσματα 3D για κάθε λέξη (Βασιλιάς, Άνδρας, Φάλαινα, Δελφίνι) και τα σχεδιάζει σε ένα 3D scatter plot με μεγάλους κόκκινους δείκτες και ετικέτες. Επιπλέον, συνδέει με διακεκομμένες γραμμές λέξεις με παρόμοιο νόημα (Βασιλιάς–Άνδρας, Φάλαινα–Δελφίνι) για να δείξει σχέσεις/συσχετίσεις στον χώρο των embeddings. Το γράφημα περιλαμβάνει κατάλληλους άξονες, τίτλο, και αποθηκεύεται σε υψηλή ανάλυση ως εικόνα 3D_Word_Embeddings.png.
+'''
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
@@ -748,6 +760,10 @@ plt.savefig("3D_Word_Embeddings.png", dpi=300)
 plt.show()
 
 #Χρονολογική Εξέλιξη των Μοντέλων NLP
+
+'''
+ο κώδικας δημιουργεί μια χρονολογική απεικόνιση της εξέλιξης των μοντέλων NLP. Χωρίζει την ιστορία σε τρεις φάσεις: παραδοσιακοί αλγόριθμοι (~1995–2012), νευρωνικά δίκτυα RNN/LSTM/GRU (~2013–2017), και Transformers (BERT, GPT, T5, 2018–σήμερα). Κάθε φάση εμφανίζεται ως σημείο σε έναν κάθετο άξονα, συνοδευόμενο από bullets που περιγράφουν χαρακτηριστικά και περιορισμούς. Οι φάσεις συνδέονται με γραμμές για να δείξουν τη διαδοχή τους. Το γράφημα είναι καθαρό, χωρίς άξονες, με τίτλο και κατάλληλο spacing, ώστε να απεικονίζει οπτικά την χρονική και τεχνολογική πρόοδο στο NLP.
+'''
 import matplotlib.pyplot as plt
 
 # Δεδομένα
@@ -815,6 +831,11 @@ fig.suptitle("Χρονολογική Εξέλιξη Εισόδων στα Μον
 plt.show()
 
 #Διάγραμμα ροής XLM R (feature extraction) → TCN (feature enrichment) → ML #Classifier (prediction)
+
+'''
+ο κώδικας δημιουργεί ένα διάγραμμα ροής της διαδικασίας NLP XLM-R → TCN → ML Classifier. Απεικονίζει κάθε βήμα της αλυσίδας: από την είσοδο κειμένου, την προεπεξεργασία και tokenization, την εξαγωγή χαρακτηριστικών με το XLM-R transformer, τον εμπλουτισμό χαρακτηριστικών μέσω TCN (Temporal Convolutional Network), και την τελική πρόβλεψη από έναν ML Classifier (π.χ. XGBoost, KNN, LR). Χρησιμοποιεί Graphviz για κάθετους κόμβους με χρωματισμένα πλαίσια, συνδέσεις με ετικέτες που εξηγούν τη ροή δεδομένων, και αποθηκεύει το διάγραμμα σε υψηλή ανάλυση ως PNG για παρουσίαση ή ένθεσή του σε έγγραφα.
+'''
+
 # Εγκατάσταση graphviz στο Colab
 !apt-get install -y graphviz
 !pip install graphviz
@@ -857,6 +878,11 @@ print("💡 Συμβουλή: Εισήγαγε το PNG στο Word με 'Εισ
 
 
 #Απόδοση Μετρικών σε Datasets 2 κλάσεων (μέσες τιμές)
+
+'''
+Αυτός ο κώδικας παρουσιάζει οπτικά την απόδοση μοντέλων σε datasets δύο και τριών κλάσεων χρησιμοποιώντας heatmaps. Δημιουργεί δύο DataFrames με βασικές μετρικές αξιολόγησης (Accuracy, F1, Precision, Recall, MCC, Cohen’s Kappa) για κάθε dataset, ξεχωριστά για binary datasets και trinary datasets, και στη συνέχεια τα απεικονίζει με διαφορετικά χρωματικά maps (YlOrRd για 2 κλάσεις, BuPu για 3 κλάσεις). Τα heatmaps διευκολύνουν τη σύγκριση επιδόσεων ανά μετρική και dataset, επισημαίνοντας με χρωματική ένταση τα υψηλά και χαμηλά αποτελέσματα, προσφέροντας μια γρήγορη και καθαρή οπτική σύγκριση των μοντέλων.
+'''
+
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -912,8 +938,21 @@ plt.title("Απόδοση Μετρικών σε Datasets 3 κλάσεων μέσ
 plt.tight_layout()
 plt.show()
 
+
+
 #Critical Difference Diagram (Friedman–Nemenyi) για Majority Vote
 # -*- coding: utf-8 -*-
+
+'''
+Critical Difference Diagram (Friedman–Nemenyi)
+Χρησιμοποιείται για να δει κανείς ποια μοντέλα/συνδυασμοί μοντέλων (Majority Vote ensembles) είναι στατιστικά διαφορετικά σε απόδοση.
+Κάθε μοντέλο έχει μια μέση κατάταξη (mean rank) και ένα διάστημα Critical Difference (CD) γύρω από αυτήν.
+Το διάγραμμα δείχνει:
+Γκρίζες μπάρες: το διάστημα CD (όπου οι διαφορές δεν είναι στατιστικά σημαντικές).
+Μπλε σημεία: η μέση κατάταξη κάθε μοντέλου.
+Πράσινη κάθετη γραμμή: η καλύτερη μέση κατάταξη.
+Χρήσιμο για να συγκρίνουμε πολλά μοντέλα ταυτόχρονα και να δούμε αν οι διαφορές είναι σημαντικές.
+'''
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -1041,6 +1080,30 @@ def plot_calibration(df, title, filename):
 # Δημιουργία γραφημάτων
 plot_calibration(df_climate, "Calibration Metrics - climate_3cl", "calibration_climate_3cl.png")
 plot_calibration(df_cardiff, "Calibration Metrics - cardifnlp_2cl", "calibration_cardifnlp_2cl.png")
+
+
+'''
+ο κώδικας δημιουργεί ομαδοποιημένα (grouped) bar charts για κάθε dataset, συγκρίνοντας την απόδοση διαφορετικών classifiers με βάση 6 βασικές μετρικές: Accuracy, F1, Precision, Recall, MCC, Kappa.
+Τι κάνει βήμα-βήμα:
+Δημιουργία δεδομένων:
+Κάθε dataset έχει dictionary με τιμές μετρικών για 3 classifiers (π.χ. MV-“T5,GPT2,Pythia”, SV-“DeBERTa,T5,Albert”, T5).
+Όλα τα datasets αποθηκεύονται σε μια λίστα all_data με αριθμό πίνακα και όνομα dataset.
+Βασική απεικόνιση για κάθε dataset:
+Μετατροπή σε μακρύ format (melt) για χρήση με seaborn.
+Δημιουργία grouped bar plot: οι μετρικές στον άξονα X και τα bars ανα classifier (χρωματικά ξεχωριστά).
+Προσθήκη τιμών πάνω στα bars για εύκολη ανάγνωση.
+Ρυθμίσεις title, axes, legend και πλέγματος.
+Συνολικά γραφήματα σε ένα figure:
+Χρησιμοποιούνται subplots για όλα τα datasets μαζί (4x3 grid).
+Ένα κοινό legend μόνο στο πρώτο subplot για καθαρότητα.
+Βελτιωμένη έκδοση για Word/έγγραφα:
+Καθαρότερο layout, χωρίς πλαίσια, με διαφανές background.
+Legend τοποθετημένο 1.5 εκατοστά πάνω από το γράφημα.
+Οριζόντιο grid μόνο στον άξονα Υ για πιο καθαρή εμφάνιση.
+Εξασφαλίζει ότι όλα τα bars είναι ευανάγνωστα με τιμές πάνω από αυτά.
+Αποθήκευση:
+Κάθε γράφημα αποθηκεύεται σε υψηλή ανάλυση (dpi=300) με διαφάνεια για χρήση σε Word ή παρουσίαση.
+'''
 
 #---------------------------------------------#
 import pandas as pd
